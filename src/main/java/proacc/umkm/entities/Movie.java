@@ -20,6 +20,9 @@ public class Movie {
     @Column
     private String email;
 
-    @Column
-    private String created_at;
+    @Column(name = "created_at")
+    private String createdAt;
+
+    @Column(name = "updated_at")
+    private String updatedAt;
 }

@@ -1,9 +1,9 @@
 package proacc.umkm.controllers;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
@@ -56,8 +56,13 @@ public class MovieController {
 
         if (movie == null) return ResponseEntity.notFound().build();
 
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = currentDateTime.format(formatter);
+
         movie.setName(request.getName());
         movie.setEmail(request.getEmail());
+        movie.setUpdatedAt(formattedDateTime);
 
         Movie updatedMovie = movieRepository.save(movie);
         ApiResponse<Movie> response = new ApiResponse<>(true, updatedMovie);
