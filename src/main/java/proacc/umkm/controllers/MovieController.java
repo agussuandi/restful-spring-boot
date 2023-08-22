@@ -37,8 +37,17 @@ public class MovieController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ApiResponse<Movie>> store(@RequestBody Movie movie) {
+    public ResponseEntity<ApiResponse<Movie>> store(@RequestBody Movie request) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = currentDateTime.format(formatter);
+
+        Movie movie = new Movie();
+        movie.setName(request.getName());
+        movie.setEmail(request.getEmail());
+        movie.setCreatedAt(formattedDateTime);
         Movie savedMovie = movieRepository.save(movie);
+
         ApiResponse<Movie> response = new ApiResponse<>(true, savedMovie);
         return ResponseEntity.ok(response);
     }
