@@ -1,5 +1,7 @@
 package proacc.umkm.controllers;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +27,10 @@ public class MovieController {
 
     @GetMapping("")
     public ResponseEntity<ApiResponse<List<Movie>>> index(@RequestParam(required = false) String search) throws JSONException {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = currentDateTime.format(formatter);
+        System.out.println(formattedDateTime);
         List<Movie> movies = movieRepository.searchMovie(search);
         ApiResponse<List<Movie>> response = new ApiResponse<>(true, movies);
         return ResponseEntity.ok(response);
