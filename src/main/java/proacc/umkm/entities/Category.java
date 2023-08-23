@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Setter
 @Getter
@@ -16,4 +18,20 @@ public class Category {
 
     @Column
     private String name;
+
+    @Column(name = "created_at")
+    private String createdAt;
+
+    @Column(name = "updated_at")
+    private String updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now().toString();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now().toString();
+    }
 }
