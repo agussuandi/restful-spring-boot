@@ -1,6 +1,8 @@
 package proacc.umkm.controllers;
 
 import org.json.JSONException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,9 @@ public class CategoryController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ApiResponse<List<Category>>> index(@RequestParam(required = false) String search) throws JSONException {
-        List<Category> categories = categoryRepository.searchCategory(search);
-        ApiResponse<List<Category>> response = new ApiResponse<>(true, categories);
+    public ResponseEntity<ApiResponse<Page<Category>>> index(Pageable pageable) {
+        Page<Category> categories = categoryRepository.findAll(pageable);
+        ApiResponse<Page<Category>> response = new ApiResponse<>(true, categories);
         return ResponseEntity.ok(response);
     }
 
