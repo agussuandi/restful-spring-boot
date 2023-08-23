@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import proacc.umkm.entities.Movie;
+import proacc.umkm.entities.Category;
 import proacc.umkm.utils.ApiResponse;
+import proacc.umkm.request.MovieRequest;
 import proacc.umkm.repositories.MovieRepository;
+import proacc.umkm.repositories.CategoryRepository;
 
 @RestController
 @RequestMapping(value = "/api/v1/movies")
@@ -20,9 +23,12 @@ public class MovieController {
 
     @Autowired
     private final MovieRepository movieRepository;
+    @Autowired
+    private final CategoryRepository categoryRepository;
 
-    public MovieController(MovieRepository movieRepository) {
+    public MovieController(MovieRepository movieRepository, CategoryRepository categoryRepository) {
         this.movieRepository = movieRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping("")
@@ -37,11 +43,15 @@ public class MovieController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ApiResponse<Movie>> store(@RequestBody Movie request) {
+    public ResponseEntity<ApiResponse<Movie>> store(@RequestBody MovieRequest request) {
+        Category category = categoryRepository.findById(request.getCategoryId()).orElse(null);
+
+        if (category == null) return ResponseEntity.notFound().build();
 
         Movie movie = new Movie();
         movie.setName(request.getName());
         movie.setEmail(request.getEmail());
+        movie.setCategory(category);
         Movie savedMovie = movieRepository.save(movie);
 
         ApiResponse<Movie> response = new ApiResponse<>(true, savedMovie);
@@ -56,18 +66,16 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Movie>> update(@PathVariable Long id, @RequestBody Movie request) {
+    public ResponseEntity<ApiResponse<Movie>> update(@PathVariable Long id, @RequestBody MovieRequest request) {
         Movie movie = movieRepository.findById(id).orElse(null);
-
         if (movie == null) return ResponseEntity.notFound().build();
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = currentDateTime.format(formatter);
+        Category category = categoryRepository.findById(request.getCategoryId()).orElse(null);
+        if (category == null) return ResponseEntity.notFound().build();
 
         movie.setName(request.getName());
         movie.setEmail(request.getEmail());
-        movie.setUpdatedAt(formattedDateTime);
+        movie.setCategory(category);
 
         Movie updatedMovie = movieRepository.save(movie);
         ApiResponse<Movie> response = new ApiResponse<>(true, updatedMovie);

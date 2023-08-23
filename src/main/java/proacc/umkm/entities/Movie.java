@@ -3,9 +3,7 @@ package proacc.umkm.entities;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
-import org.springframework.cglib.core.Local;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,6 +21,10 @@ public class Movie {
 
     @Column
     private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(name = "created_at")
     private String createdAt;
